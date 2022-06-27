@@ -53,6 +53,8 @@ def addMissingSGDProfiles(filename, results, CONFIGURATIONS, DEPENDENCIES):
         # Reset state for every new order/line
         if not visitedBefore[orderLineID]:
             visitedBefore[orderLineID] = True
+            
+            print(colorama.Fore.RED + "\n########## NOW AUDITING " + row[1] + " - " + returnLineNumber(row[2]) + " ##########")
 
             # Fix NULL values 
             if row[5] is None or row[5] == "NotNeeded":
@@ -65,7 +67,6 @@ def addMissingSGDProfiles(filename, results, CONFIGURATIONS, DEPENDENCIES):
             # Get dependencies for this line
             #THIS USED TO RETURN THIS:    # return [AO, CONF, userHanding, userTrack, userMeeting]
             # Now returns a configuration object with all of these values as properties and more. See ConfigurationDB.py for class def
-            print(colorama.Fore.RED + "\n########## NOW AUDITING " + row[1] + " - " + returnLineNumber(row[2]) + " ##########")
             currentConfig = ConfigurationDB.pickConfiguration(CONFIGURATIONS, DEPENDENCIES, row, orderHasScreens[orderLineID])
             print(colorama.Fore.RED + "~~~             Configuration: " + currentConfig.description + "           ~~~")
             if currentConfig.CONF in Constants.pocketDoorConfigs:
