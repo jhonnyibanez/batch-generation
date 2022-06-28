@@ -81,6 +81,21 @@ def addStiles(filename, row, batchData, currentConfig, sashRailsMissing, rowsAdd
         writer.writerow(rightRowTemplate)
         rowsAdded += 2
 
+        # Add reinforcements if they exist
+        if stilesInfo[4] is not None:
+            # Left stile reinforcement
+            print("Adding reinforcement for left stile...")
+            leftReinforecmentTemplate = [str(float(row[9])-4.75), "1", returnLineNumber(row[2]), row[1], row[3], row[4], stilesInfo[4],"",row[0], Constants.colorCodes[row[6]], batchData[1], "", "STILE REINFORCEMENT", "STILE REINFORCEMENT", "", "", "", batchData[0], stilesInfo[5], "316920"]
+            writer.writerow(leftReinforecmentTemplate)
+            rowsAdded += 1
+
+        if stilesInfo[6] is not None:
+            # Right stile reinforcement
+            print("Adding reinforcement for right stile...")
+            rightReinforecmentTemplate = [str(float(row[9])-4.75), "1", returnLineNumber(row[2]), row[1], row[3], row[4], stilesInfo[6],"",row[0], Constants.colorCodes[row[6]], batchData[1], "", "STILE REINFORCEMENT", "STILE REINFORCEMENT", "", "", "", batchData[0], stilesInfo[7], "316920"]
+            writer.writerow(rightReinforecmentTemplate)
+            rowsAdded += 1
+
         # Check if entire sash was missing. If so, add rails as well
         if sashRailsMissing:
             print("Looks like the whole sash was missin, lemme pop them rails in for ya...")

@@ -26,6 +26,20 @@ def deleteSGDJambCovers(batchFilename):
         writer = csv.writer(writeFile)
         writer.writerows(keepRows)
 
+def deleteSGDReinforcements(batchFilename):
+    keepRows = list()
+    REINFORCEMENT_DESC = "STILE REINFORCEMENT"
+    with open(batchFilename, 'r') as readFile:
+        reader = csv.reader(readFile)
+        for row in reader:
+            if len(row) > 0 and row[13] != REINFORCEMENT_DESC:
+                keepRows.append(row)
+
+    with open(batchFilename, 'w', newline='') as writeFile:
+        writer = csv.writer(writeFile)
+        writer.writerows(keepRows)
+
+
 def deleteExtraSGDJambs(batchFilename, orderNum, lineNum, initialRowCount, POCKET_ID):
     keepRows = list()
 

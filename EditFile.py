@@ -38,6 +38,8 @@ def addMissingSGDProfiles(filename, results, CONFIGURATIONS, DEPENDENCIES):
     DeleteProfile.deleteSGDStiles(filename)
     print("Deleting jamb covers...")
     DeleteProfile.deleteSGDJambCovers(filename)
+    print("Deleting existing reinforcements...")
+    DeleteProfile.deleteSGDReinforcements(filename)
     
     # Record what was useful // keep track of what was added
     initialRowCount = BatchInfo.getOriginalRowCount(filename)

@@ -4,29 +4,52 @@ def getSashInfo(row, color, config):
     sashKey = row[0][-2:]
 
     # Left stile
-    leftStile = config.sashes[sashKey]["leftStile"]
+    leftStile = config.sashes[sashKey]["leftStile"]["prof"]
     leftPartNum = leftStile + color + "197"
     
     # Right stile
-    rightStile = config.sashes[sashKey]["rightStile"]
+    rightStile = config.sashes[sashKey]["rightStile"]["prof"]
     rightPartNum = rightStile + color + "197"
 
-    return [str(leftPartNum), str(rightPartNum), str(leftStile), str(rightStile)] 
+    # Check for reinforcements
+    leftReinfPartNum, leftReinfProf = getReinforcements(leftStile, config, config.sashes[sashKey]["leftStile"]["ID"], row[9], float(row[12]))
+    rightReinfPartNum, rightReinfProf = getReinforcements(rightStile, config, config.sashes[sashKey]["rightStile"]["ID"], row[9], float(row[12]))
+    return [str(leftPartNum), str(rightPartNum), str(leftStile), str(rightStile), leftReinfPartNum, leftReinfProf, rightReinfPartNum, rightReinfProf] 
 
 # Need to figure out a way to add reinforcements
 
-# def getReinforcements(row, stile, DSPW, DSPH):
-#     sashKey = row[0][-2:]
-#     if stile == "708":
-#         # 901A for any interlock 708
-#     elif stile == "706":
-#         # 901A for any meeting stile with panel size > 60 x 108
-#     elif stile == "718":
-#         # Astragal Reinforcement (1/2” X 2-1/2” Aluminum Bar) is required in SIW718 HD Lock Stile profile when used at a Center Meet/Astragal and the Panel height is greater than 120”.
-#     elif stile == "738":
-#         # 901A for any interlock when DPSW > 60 and DSPH > 82 OR DSPW > 42 and DPSW > 94
-    
+def getReinforcements(stile, config, configID, DSPH, DSPW):
+    AO = config.family
+    HP = config.HP
+    # DSPH should already be numerical but just in case
+    DSPW = float(DSPW)
+    DSPH = float(DSPH)
 
-#     elif stile == "755":
-#         # 901E NO MATTER WHAT
+    if stile == "708" and configID == "INLK":
+        # 901A for any interlock 708
+        prof = "901A"
+    elif stile == "706" and configID == "CNMT" and not (AO == "AKKA" and HP == "STAN"):
+        # 901A for any meeting stile with panel size > 60 x 108
+        if DSPW >= 60 or DSPH >= 108:
+            prof = "901A"
+    elif stile == "718" and configID == "CNMT" and DSPH >= 120:
+        # Astragal Reinforcement (1/2” X 2-1/2” Aluminum Bar) is required in SIW718 HD Lock Stile profile when used at a Center Meet/Astragal and the Panel height is greater than 120”.
+        prof = "901A"
+    elif stile == "738" and configID == "INLK":
+        # 901A for any interlock when DPSW > 60 and DSPH > 82 OR DSPW > 42 and DPSW > 94
+        if DSPW >= 60 or DSPH >= 94 or (DSPW >= 42 and DSPH >= 82):
+            prof = "901A"
+    elif stile == "755":
+        # 901E NO MATTER WHAT (new meeting stiles sold separately)
+        prof = "901E"
+    else:
+        prof = None
+
+    # 
+    if prof:
+        partNum = prof + "M197"
+    else:
+        partNum = None
+
+    return [partNum, prof]
 

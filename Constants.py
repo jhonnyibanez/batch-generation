@@ -12,9 +12,9 @@ producingLoc = {
 producingLocID = {
     "CM" : 262920,
     "SF" : 269920,
-    "WIN" : 294920,
+    "WIN" : 37,
     "SGD" : 30,
-    "FD" : 319920,
+    "FD" : 39,
     "PB" : 31,
     "GD" : 346920,
 }
@@ -181,6 +181,8 @@ headerProf = {
     "734": "727",
     "735": "723",
 }
+reinforcedStiles = ["706","708","718","738","755"]
+
 ###### PV/BF CONSTANTS ######
 PBRails = {
     "4" : "805",

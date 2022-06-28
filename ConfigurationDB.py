@@ -3,7 +3,7 @@ import csv, Constants
 # 8: jamb cover qty, 9-28 stiles
 class AOfamily():
     # Create dict of sashes for current configuration
-    def generateSashes(self, row):
+    def generateSashes(self, configRow, stileTypeRow):
         # Initialize sash object and number
         sashes = {}
         sashNum = 1
@@ -13,12 +13,18 @@ class AOfamily():
         # Go through each sash position
         for i in range(SASH_DATA_BEGIN, SASH_DATA_END, 2):
             # Check if current sash exists in that configuration database (csv)
-            if row[i] and row[i+1]:
+            if configRow[i] and configRow[i+1]:
                 # Define current sashes stiles and add stiles to dict
                 currentSash = "S" + str(sashNum)
                 sashes[currentSash] = {
-                    "leftStile": row[i],
-                    "rightStile": row[i+1],
+                    "leftStile": {
+                        "prof": configRow[i],
+                        "ID" : stileTypeRow[i]
+                        },
+                    "rightStile": {
+                        "prof": configRow[i+1],
+                        "ID" : stileTypeRow[i+1]
+                        },
                 }
 
                 # Increment sash number for next two loops
@@ -27,20 +33,20 @@ class AOfamily():
         return sashes
     
     # Check for dependencies
-    def __init__(self, row):
+    def __init__(self, configRow, stileTypeRow):
         # Dependencies
-        self.family = row[0]
-        self.HP = row[1]
-        self.CONF = row[2]
-        self.handing = row[4] if row[4] else False
-        self.track = row[5] if row[5] else False
-        self.meeting = row[6] if row[6] else False
-        self.screens = True if row[7] else False
+        self.family = configRow[0]
+        self.HP = configRow[1]
+        self.CONF = configRow[2]
+        self.handing = configRow[4] if configRow[4] else False
+        self.track = configRow[5] if configRow[5] else False
+        self.meeting = configRow[6] if configRow[6] else False
+        self.screens = True if configRow[7] else False
         
         # Sashes, jamb cover quantities, and configuration description
-        self.description = row[3]
-        self.coverQty = row[8]
-        self.sashes = self.generateSashes(row)
+        self.description = configRow[3]
+        self.coverQty = configRow[8]
+        self.sashes = self.generateSashes(configRow, stileTypeRow)
 
 class Dependencies():
     def __init__(self,row):
@@ -56,14 +62,16 @@ class Dependencies():
 # Create database of configurations
 def createConfigurationDB():
     configListFilename = "SGD UCFG Configurations.csv"
+    stileTypeFilename = "StileTypeIDs.csv"
     AOFamilies = []
 
-    with open(configListFilename, encoding='utf-8-sig') as infile:
-        reader = csv.reader(infile) # Create a new reader    
+    with open(configListFilename, encoding='utf-8-sig') as configFile, open(stileTypeFilename, encoding='utf-8-sig') as stileTypeFile:
+        configReader = list(csv.reader(configFile)) # Create a new reader    
+        stileTypeReader = list(csv.reader(stileTypeFile)) # Create a new reader    
         
-        # Generate each configuration and append to list
-        for row in reader:
-            AOFamilies.append(AOfamily(row))
+    # Generate each configuration and append to list
+    for i in range(len(configReader)):
+        AOFamilies.append(AOfamily(configReader[i], stileTypeReader[i]))
     
     return AOFamilies
 
