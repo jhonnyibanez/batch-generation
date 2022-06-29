@@ -1,46 +1,16 @@
 import csv
-
-def deleteSGDStiles(batchFilename):
+# Delete stiles, jamb covers, and reinforcementss
+def deleteSGDGarbageValues(fileList):
     keepRows = list()
-    stiles = ["LEFT STILE", "RIGHT STILE"]
-    with open(batchFilename, 'r') as readFile:
-        reader = csv.reader(readFile)
-        for row in reader:
-            if len(row) > 0 and row[13] not in stiles:
-                keepRows.append(row)
+    deletedComponents = ["LEFT STILE", "RIGHT STILE", "JAMB SCREW CVR", "STILE REINFORCEMENT"]
+    for row in fileList:
+        if row[13] not in deletedComponents:
+            keepRows.append(row)
 
-    with open(batchFilename, 'w', newline='') as writeFile:
-        writer = csv.writer(writeFile)
-        writer.writerows(keepRows)
-    
-def deleteSGDJambCovers(batchFilename):
-    keepRows = list()
-    JAMB_CVR_DESC = "JAMB SCREW CVR"
-    with open(batchFilename, 'r') as readFile:
-        reader = csv.reader(readFile)
-        for row in reader:
-            if len(row) > 0 and row[13] != JAMB_CVR_DESC:
-                keepRows.append(row)
+    return keepRows
 
-    with open(batchFilename, 'w', newline='') as writeFile:
-        writer = csv.writer(writeFile)
-        writer.writerows(keepRows)
-
-def deleteSGDReinforcements(batchFilename):
-    keepRows = list()
-    REINFORCEMENT_DESC = "STILE REINFORCEMENT"
-    with open(batchFilename, 'r') as readFile:
-        reader = csv.reader(readFile)
-        for row in reader:
-            if len(row) > 0 and row[13] != REINFORCEMENT_DESC:
-                keepRows.append(row)
-
-    with open(batchFilename, 'w', newline='') as writeFile:
-        writer = csv.writer(writeFile)
-        writer.writerows(keepRows)
-
-
-def deleteExtraSGDJambs(batchFilename, orderNum, lineNum, initialRowCount, POCKET_ID):
+# Delete extra jambs for pocket doors
+def deleteExtraSGDJambs(fileList, orderNum, lineNum, POCKET_ID):
     keepRows = list()
 
     # Define jambs to delete
@@ -50,22 +20,12 @@ def deleteExtraSGDJambs(batchFilename, orderNum, lineNum, initialRowCount, POCKE
         JAMB_DESC = ["RH JAMB"]
     elif POCKET_ID == "B":
         JAMB_DESC = ["LH JAMB", "RH JAMB"]
-
-    with open(batchFilename, 'r') as readFile:
-        reader = csv.reader(readFile)
-        for row in reader:
-            if len(row) > 0:
-                if  row[3] == orderNum and row[2] == lineNum:
-                    # Pretty sure I can combine this if statement with the one above but idc
-                    if row[13] not in JAMB_DESC:
-                        keepRows.append(row)
-                    else:
-                        initialRowCount -= 1
-                else:
-                    keepRows.append(row)
-
-    with open(batchFilename, 'w', newline='') as writeFile:
-        writer = csv.writer(writeFile)
-        writer.writerows(keepRows)
     
-    return initialRowCount
+    # Delete corresponding extra jambs
+    for row in fileList:
+        if row[3] == orderNum and row[2] == lineNum:
+            if row[13] not in JAMB_DESC:
+                keepRows.append(row)
+        else:
+            keepRows.append(row)    
+    return keepRows
