@@ -139,15 +139,16 @@ def addMissingSGDProfiles(filename, results, CONFIGURATIONS, DEPENDENCIES):
                     # # NOT SURE IF WE SHOULD CHECK FOR ONLY TOP OR BOTTOM, currently only way is for both to be missing
 
                     # Inside WE ADD RAILS AND REINFORCEMENTS!!!
-                    rowsAdded +=  AddProfile.addStiles(row, BATCH_DATA, currentConfig, sashRailsMissing)
+                    stileLength, rowsAddedTemp =  AddProfile.addStiles(row, BATCH_DATA, currentConfig, sashRailsMissing)
+                    rowsAdded += rowsAddedTemp
 
                 # Check for screens
                 elif orderLevel[0] == "R":
                     print("Damn bro we got screens... my b")
                     # ...If screens missing, add them
-                    if CheckMissing.checkIfMissing(OGFile, trackingNum, "SCREEN RAILS"):
+                    if CheckMissing.checkIfMissing(OGFile, trackingNum, "SCREEN STILES"):
                         print("Screens were missing. Adding screens for " + orderLevel + " level")
-                        rowsAdded += AddProfile.addScreens(row, BATCH_DATA)
+                        rowsAdded += AddProfile.addScreens(row, BATCH_DATA, stileLength)
         
     initialRowCount = len(OGFile)
     OGFile += rowsAdded

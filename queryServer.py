@@ -41,8 +41,8 @@ def autoEditBatchFile(prodLoc):
 
     # Decide to audit one batch or all :)
     while True:
-        decision = input("Do you want to run one (1) batch or all batches in folder? [Please enter '1' or 'ALL']: ").upper()
-        if decision == '1' or decision == 'ALL':
+        decision = input("Do you want to run all batches in folder or specific quantity? [Please enter specific quantity or 'ALL']: ").upper()
+        if decision.isnumeric() or decision == 'ALL':
             break
     
     # Define batch filenames and query results
@@ -100,22 +100,11 @@ def defineBatches(decision, prodLoc):
     filenames = []
     queries = []
 
-    # Start time
-    queryStartTime = time.time()
 
-    # Only one batch
-    if decision == '1':
-        # Generate batch filename
-        batchNumber = input("Input batch number: ")
-        batchFile = FILE_PREFIX + batchNumber + ".csv"
-        batchFilename = os.path.join(THIS_FOLDER[0:45], batchFile)
-        filenames.append(batchFilename)
-
-        # Query batch
-        query = queryBatch(batchNumber, prodLoc)
-        queries.append(query)
     # All batches
-    else:
+    if decision == 'ALL':
+        # Start time
+        queryStartTime = time.time()
         for file in os.listdir(THIS_FOLDER[0:FOLDER_DIR_END]):
             if file.startswith(FILE_PREFIX):
                 # Grab only the "batch number" portion of the file name 
@@ -131,6 +120,27 @@ def defineBatches(decision, prodLoc):
                     # Query batch, generate query results list
                     query = queryBatch(batchNumber, prodLoc)
                     queries.append(query)
+    # Only one batch
+    else:
+        batchNumberList = []
+        for i in range(int(decision)):
+            # Generate batch filename
+            while True:
+                batchNumber = input("Input batch number " + str(i+1) + " : ")
+                if batchNumber.isnumeric():
+                    batchNumberList.append(batchNumber)
+                    break
+
+            # Start time
+            batchFile = FILE_PREFIX + batchNumber + ".csv"
+            batchFilename = os.path.join(THIS_FOLDER[0:45], batchFile)
+            filenames.append(batchFilename)
+
+        queryStartTime = time.time()
+        for batchNum in batchNumberList:
+            # Query batch
+            query = queryBatch(batchNum, prodLoc)
+            queries.append(query)
     
     # End time
     queryExecutionTime = (time.time() - queryStartTime)

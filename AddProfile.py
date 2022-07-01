@@ -87,10 +87,10 @@ def addStiles(row, batchData, currentConfig, sashRailsMissing):
         rowsAdded.append(bottomRailTemplate)
 
 
-    return rowsAdded
+    return [str(row[9]), rowsAdded]
 
 # Add screens SGD
-def addScreens(row, batchData):
+def addScreens(row, batchData, stileLength):
     rowsAdded = []
     # Screen part numbers
     scrRailPartNum = "712" + Constants.colors[row[6]] + "197"
@@ -99,8 +99,8 @@ def addScreens(row, batchData):
     
     # Screen rows
     screenRailTemplate = [row[10], "2", returnLineNumber(row[2]), row[1], row[3], row[4], scrRailPartNum,"",row[0], Constants.colorCodes[row[6]], batchData[1], "", "SCREEN RAILS", "SCREEN RAILS", "", "", "", batchData[0], "712", "316920"]
-    screenStileTemplate = [str(row[9]), "2", returnLineNumber(row[2]), row[1], row[3], row[4], scrStilePartNum,"",row[0], Constants.colorCodes[row[6]], batchData[1], "", "SCREEN STILES", "SCREEN STILES", "", "", "", batchData[0], "713", "316920"]
-    screenAstragalTemplate = [str(row[9]), "1", returnLineNumber(row[2]), row[1], row[3], row[4], scrAstragalPartNum,"",row[0], Constants.colorCodes[row[6]], batchData[1], "", "ASTRAGAL", "ASTRAGAL", "", "", "", batchData[0], "714", "316920"]
+    screenStileTemplate = [stileLength, "2", returnLineNumber(row[2]), row[1], row[3], row[4], scrStilePartNum,"",row[0], Constants.colorCodes[row[6]], batchData[1], "", "SCREEN STILES", "SCREEN STILES", "", "", "", batchData[0], "713", "316920"]
+    screenAstragalTemplate = [stileLength, "1", returnLineNumber(row[2]), row[1], row[3], row[4], scrAstragalPartNum,"",row[0], Constants.colorCodes[row[6]], batchData[1], "", "ASTRAGAL", "ASTRAGAL", "", "", "", batchData[0], "714", "316920"]
     
     # Add the rails and stiles. Only add astragal if user requests it
     rowsAdded.append(screenRailTemplate)
